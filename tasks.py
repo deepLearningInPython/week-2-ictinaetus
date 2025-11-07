@@ -18,7 +18,15 @@ from sklearn import datasets
 # Copy and paste the code for that function here:
 # -----------------------------------------------
 def my_mlp(w, X, sigma=np.tanh):
-
+    # extract weight matrices from vector w
+    W1 = w[:4*6].reshape(4, 6)          
+    W2 = w[4*6:4*6 + 7*4].reshape(7, 4) 
+    W3 = w[4*6 + 7*4:].reshape(1, 7)    
+    
+    # forward pass through network
+    a1 = sigma(W1 @ X) 
+    a2 = sigma(W2 @ a1)
+    f = sigma(W3 @ a2) 
     return f
 # -----------------------------------------------
  
@@ -32,8 +40,9 @@ def my_mlp(w, X, sigma=np.tanh):
  
 # Copy and paste the code for that function here:
 # -----------------------------------------------
-def MSE_func(w, X, y): # give the appropriate name and arguments
-
+def MSE_func(w, X, y):
+    f = my_mlp(w, X)                   # predicted outputs
+    MSE = np.sum((f.flatten() - y)**2) # mean squared error
     return MSE
 # -----------------------------------------------
  
@@ -50,8 +59,9 @@ def MSE_func(w, X, y): # give the appropriate name and arguments
 # Copy and paste the code for that function here:
 # -----------------------------------------------
 def dR(beta, x, y):
-    # implement the above formula for dR/dβ₀
-    # implement the above formula for dR/dβ₁
+    N = len(x)
+    dbeta_0 = 2/N * np.sum(beta[0] + beta[1]*x - y)     # derivative w.r.t β₀
+    dbeta_1 = 2/N * np.sum((beta[0] + beta[1]*x - y) * x) # derivative w.r.t β₁
     return np.array([dbeta_0, dbeta_1])
  
 # -----------------------------------------------
